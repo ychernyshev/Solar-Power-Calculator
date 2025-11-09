@@ -1,0 +1,44 @@
+# === Global ===
+*.log
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# === Python / Django ===
+.venv/
+venv/
+calculator/__pycache__/
+calculator/db.sqlite3
+calculator/media/
+calculator/staticfiles/
+calculator/.pytest_cache/
+calculator/.mypy_cache/
+calculator/.coverage
+calculator/coverage.xml
+
+# === Node / Vue ===
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.output/
+frontend/.eslintcache
+
+# === Docker ===
+*.pid
+*.sock
+docker-compose.override.yml
+
+# === VSCode / IDEs ===
+.vscode/
+.idea/
+*.swp
+
+# === OS ===
+Thumbs.db
+ehthumbs.db
