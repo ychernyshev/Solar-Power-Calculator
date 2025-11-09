@@ -65,7 +65,7 @@ class DataEntryLineAdmin(admin.ModelAdmin):
 
     def display_full_day_power(self,obj):
         formatted_power = f"{obj.full_day_power:.2f}"
-        return format_html('{}Кв', formatted_power)
+        return format_html('{}Вт', formatted_power)
 
     display_full_day_power.short_description = 'Вироблена потужність за день'
 

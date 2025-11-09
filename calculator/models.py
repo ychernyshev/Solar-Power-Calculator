@@ -21,14 +21,17 @@ class DataEntryLineModel(models.Model):
     evening_data_charge = models.IntegerField(verbose_name='Вечірній рівень заряду')
     evening_data_price = models.FloatField(verbose_name='Вартість використаної енергії на вечір')
     full_day_power = models.FloatField(blank=True, verbose_name='Вироблена потужність за день')
-    full_day_cost = models.FloatField(blank=True, verbose_name='Вартість виробленої енергії за день')
+    full_day_cost = models.FloatField(blank=True, null=True, verbose_name='Вартість виробленої енергії за день')
     power_tariff = models.FloatField(verbose_name='Вартість за Кв', default='4.32')
 
     def _calculate_full_day_power(self):
         try:
             if self.afternoon_data_charge > 0:
-                return (self.afternoon_data_charge - self.evening_data_charge) * 20.48 + (
-                            (self.afternoon_data_price - self.evening_data_price) / 43.2) * 100
+                if self.afternoon_data_charge < self.evening_data_charge:
+                    return (self.evening_data_charge - self.afternoon_data_charge) * 20.48 + (
+                            ((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100
+                if self.afternoon_data_charge > self.evening_data_charge:
+                    return (((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100
             if self.afternoon_data_charge == 0:
                 return((self.morning_data_charge - 6) - self.evening_data_charge) * 20.48 + (
                         ((self.morning_data_price + 0.60) - self.evening_data_price) / 43.2) * 100
@@ -39,8 +42,11 @@ class DataEntryLineModel(models.Model):
     def _calculate_full_day_cost(self):
         try:
             if self.afternoon_data_price > 0:
-                return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48 + (
-                            (self.evening_data_price - self.afternoon_data_price) / 43.2) * 100) / 1000) * 4.32
+                if self.afternoon_data_charge < self.evening_data_charge:
+                    return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48 + (
+                            ((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100) / 1000) * 4.32
+                if self.afternoon_data_charge > self.evening_data_charge:
+                    return (((((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100) / 1000) * 4.32
             if self.afternoon_data_price == 0:
                 return (((self.evening_data_charge - (self.morning_data_charge - 6)) * 20.48 + (
                         (self.evening_data_price - (self.morning_data_price + 0.60)) / 43.2) * 100) / 1000) * 4.32
