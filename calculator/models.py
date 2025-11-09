@@ -31,7 +31,8 @@ class DataEntryLineModel(models.Model):
                     return (self.evening_data_charge - self.afternoon_data_charge) * 20.48 + (
                             ((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100
                 if self.afternoon_data_charge > self.evening_data_charge:
-                    return (((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100
+                    watt_error = (self.afternoon_data_charge - self.evening_data_charge) * 20.48
+                    return ((((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100) - watt_error
             if self.afternoon_data_charge == 0:
                 return((self.morning_data_charge - 6) - self.evening_data_charge) * 20.48 + (
                         ((self.morning_data_price + 0.60) - self.evening_data_price) / 43.2) * 100
@@ -46,7 +47,12 @@ class DataEntryLineModel(models.Model):
                     return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48 + (
                             ((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100) / 1000) * 4.32
                 if self.afternoon_data_charge > self.evening_data_charge:
-                    return (((((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100) / 1000) * 4.32
+                    cost_error = (self.afternoon_data_charge - self.evening_data_charge) * 20.48
+                    if cost_error < 100:
+                        return (((((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100) / 1000) * 4.32 - ((cost_error / 1000) * 4.32)
+                    if cost_error >= 100:
+                        return (((((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100) / 1000) * 4.32 - ((cost_error / 100) * 4.32)
+                    return 0
             if self.afternoon_data_price == 0:
                 return (((self.evening_data_charge - (self.morning_data_charge - 6)) * 20.48 + (
                         (self.evening_data_price - (self.morning_data_price + 0.60)) / 43.2) * 100) / 1000) * 4.32
