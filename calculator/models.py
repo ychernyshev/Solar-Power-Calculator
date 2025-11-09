@@ -26,16 +26,24 @@ class DataEntryLineModel(models.Model):
 
     def _calculate_full_day_power(self):
         try:
-            return (self.afternoon_data_charge - self.evening_data_charge) * 20.48 + (
-                        (self.afternoon_data_price - self.evening_data_price) / 43.2) * 100
+            if self.afternoon_data_charge > 0:
+                return (self.afternoon_data_charge - self.evening_data_charge) * 20.48 + (
+                            (self.afternoon_data_price - self.evening_data_price) / 43.2) * 100
+            if self.afternoon_data_charge == 0:
+                return((self.morning_data_charge - 6) - self.evening_data_charge) * 20.48 + (
+                        ((self.morning_data_price + 0.60) - self.evening_data_price) / 43.2) * 100
         except(TypeError, ZeroDivisionError):
             return 0.0
 
 
     def _calculate_full_day_cost(self):
         try:
-            return (((self.afternoon_data_charge - self.evening_data_charge) * 20.48 + (
-                        (self.afternoon_data_price - self.evening_data_price) / 43.2) * 100) / 1000) * 4.32
+            if self.afternoon_data_price > 0:
+                return (((self.afternoon_data_charge - self.evening_data_charge) * 20.48 + (
+                            (self.afternoon_data_price - self.evening_data_price) / 43.2) * 100) / 1000) * 4.32
+            if self.afternoon_data_price == 0:
+                return ((((self.morning_data_charge - 6) - self.evening_data_charge) * 20.48 + (
+                        ((self.morning_data_price + 0.60) - self.evening_data_price) / 43.2) * 100) / 1000) * 4.32
         except(TypeError, ZeroDivisionError):
             return 0.0
 
