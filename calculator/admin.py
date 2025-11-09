@@ -57,13 +57,15 @@ class DataEntryLineAdmin(admin.ModelAdmin):
 
 
     def display_full_day_cost(self, obj):
-        return format_html('{}₴', obj.full_day_cost)
+        formatted_tariff = f"{obj.full_day_cost:.2f}"
+        return format_html('{}₴', formatted_tariff)
 
     display_full_day_cost.short_description = 'Вартість виробленої енергії за день'
 
 
     def display_full_day_power(self,obj):
-        return format_html('{}Вт', obj.full_day_power)
+        formatted_power = f"{obj.full_day_power:.2f}"
+        return format_html('{}Кв', formatted_power)
 
     display_full_day_power.short_description = 'Вироблена потужність за день'
 
