@@ -1,6 +1,20 @@
 {% extends 'calculator/_base.html' %}
+{% load static %}
 
 {% block title %}{% endblock %}
 {% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-xxl-12 text-center">
+            <h4 class="text-uppercase">the graphic of solar power generation</h4>
+            <canvas class="my-4 w-100" id="myChart" width="1607" height="636"
+                    style="display: block; box-sizing: border-box; height: 636px; width: 1507px;"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>
+    <script src="{% static 'calculator/js/dashboard.js' %}"></script>
 {% endblock %}
