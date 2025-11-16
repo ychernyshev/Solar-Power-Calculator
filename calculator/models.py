@@ -5,10 +5,10 @@ from django.db.models.expressions import result
 # Create your models here.
 class DataEntryLineModel(models.Model):
     POWER = [
-        ('200', '200'),
-        ('400', '400'),
-        ('600', '600'),
-        ('800', '800'),
+            ('200', '200'),
+            ('400', '400'),
+            ('600', '600'),
+            ('800', '800'),
     ]
 
     date = models.DateField(default=False, verbose_name='Дата')

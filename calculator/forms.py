@@ -4,7 +4,7 @@ from django import forms
 
 
 class CurrentDate(forms.DateInput):
-    current_date = 'date'
+    input_type = 'date'
 
 
 class AddEntryForm(forms.Form):
@@ -13,10 +13,16 @@ class AddEntryForm(forms.Form):
     }),
         initial=date.today()
     )
-    power = forms.ChoiceField(label='', widget=forms.Select(
-        attrs={
-            'class': 'form-control',
-        }))
+    power = forms.ChoiceField(label='',
+                              choices=[('200', '200'),
+                                       ('400', '400'),
+                                       ('600', '600'),
+                                       ('800', '800'), ],
+                              widget=forms.Select(
+                                  attrs={
+                                      'class': 'form-control',
+                                      'value': '600',
+                                  }))
     weather = forms.CharField(label='', widget=forms.TextInput(
         attrs={
             'class': 'form-control',
@@ -25,36 +31,36 @@ class AddEntryForm(forms.Form):
     morning_data_charge = forms.IntegerField(label='', min_value=0, widget=forms.NumberInput(
         attrs={
             'class': 'form-control',
-            'placeholder': 'Morning charge level in %',
+            'placeholder': 'Enter charge level here',
         }
     ))
     morning_data_price = forms.FloatField(label='', min_value=0, widget=forms.NumberInput(
         attrs={
             'class': 'form-control',
-            'placeholder': 'Morning charge level in %'
+            'placeholder': 'Enter price here'
         }
     ))
     afternoon_data_charge = forms.IntegerField(label='', min_value=0, widget=forms.NumberInput(
         attrs={
             'class': 'form-control',
-            'placeholder': 'Afternoon charge level in %',
+            'placeholder': 'Enter charge level here',
         }
     ))
     afternoon_data_price = forms.FloatField(label='', min_value=0, widget=forms.NumberInput(
         attrs={
             'class': 'form-control',
-            'placeholder': 'Afternoon charge level in %'
+            'placeholder': 'Enter price here'
         }
     ))
     evening_data_charge = forms.IntegerField(label='', min_value=0, widget=forms.NumberInput(
         attrs={
             'class': 'form-control',
-            'placeholder': 'Evening charge level in %',
+            'placeholder': 'Enter charge level here',
         }
     ))
     evening_data_price = forms.FloatField(label='', min_value=0, widget=forms.NumberInput(
         attrs={
             'class': 'form-control',
-            'placeholder': 'Evening charge level in %'
+            'placeholder': 'Enter price here'
         }
     ))

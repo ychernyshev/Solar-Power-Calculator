@@ -1,5 +1,4 @@
-from pyexpat.errors import messages
-
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template.context_processors import request
@@ -15,12 +14,13 @@ def index(request):
 
 
 def add_entry(request):
-    form = AddEntryForm(request.POST)
-    if form.is_valid():
-        DataEntryLineModel.objects.create(**form.cleaned_data)
-        messages.success(request, 'New data hes been saved')
+    if request.method == 'POST':
+        form = AddEntryForm(request.POST)
+        if form.is_valid():
+            DataEntryLineModel.objects.create(**form.cleaned_data)
+            messages.success(request, 'New data hes been saved')
 
-        return HttpResponseRedirect(reverse('calculator:dashboard'))
+            return HttpResponseRedirect(reverse('calculator:dashboard'))
     else:
         form = AddEntryForm()
 
