@@ -1,28 +1,24 @@
-from django.contrib import messages
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django.template.context_processors import request
-from django.urls import reverse
-
-from calculator.forms import AddEntryForm
-from calculator.models import DataEntryLineModel
+from django.shortcuts import render
+from calculator.services.handle_entry_form import handle_entry_form
 
 
 # Create your views here.
 def index(request):
-    return render(request, 'calculator/index.html')
+    form, response = handle_entry_form(request)
+    if response:
+        return response
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'calculator/index.html', context=context)
 
 
 def add_entry(request):
-    if request.method == 'POST':
-        form = AddEntryForm(request.POST)
-        if form.is_valid():
-            DataEntryLineModel.objects.create(**form.cleaned_data)
-            messages.success(request, 'New data hes been saved')
-
-            return HttpResponseRedirect(reverse('calculator:dashboard'))
-    else:
-        form = AddEntryForm()
+    form, response = handle_entry_form(request)
+    if response:
+        return response
 
     context = {
         'form': form,
