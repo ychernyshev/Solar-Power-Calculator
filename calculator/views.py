@@ -6,15 +6,22 @@ from calculator.models import DataEntryLineModel
 
 # Create your views here.
 def index(request):
-    entries = DataEntryLineModel.objects.all()
+    entries = DataEntryLineModel.objects.all().order_by('date')
 
     form, response = handle_entry_form(request)
     if response:
         return response
 
+    labels = [entry.date.strftime("%d.%m.%Y") for entry in entries]
+    power_values = [entry.full_day_power for entry in entries]
+    cost_values = [entry.full_day_cost for entry in entries]
+
     context = {
         'entries': entries,
         'form': form,
+        "labels": labels,
+        "power_values": power_values,
+        "cost_values": cost_values,
     }
 
     return render(request, 'calculator/index.html', context=context)

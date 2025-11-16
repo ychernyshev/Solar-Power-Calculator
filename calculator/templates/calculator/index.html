@@ -7,6 +7,10 @@
     <h4 class="text-uppercase">Graphic of the solar power generation</h4>
 </div>
 
+<canvas id="powerChart"></canvas>
+<canvas id="costChart"></canvas>
+
+
 <canvas class="my-4 w-100 mb-5" id="myChart" width="1507" height="636"
         style="display: block; box-sizing: border-box; height: 636px; width: 1507px;"></canvas>
 
@@ -54,4 +58,39 @@
         integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp"
         crossorigin="anonymous"></script>
 <script src="{% static 'calculator/js/dashboard.js' %}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = {{ labels|safe }};
+    const powerData = {{ power_values|safe }};
+    const costData = {{ cost_values|safe }};
+
+    // Графік потужності
+    new Chart(document.getElementById('powerChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Вироблена потужність (Вт)',
+                data: powerData,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true,
+            }]
+        }
+    });
+
+    // Графік вартості
+    new Chart(document.getElementById('costChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Вартість енергії (грн)',
+                data: costData,
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            }]
+        }
+    });
+</script>
 {% endblock %}
