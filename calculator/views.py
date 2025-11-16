@@ -24,4 +24,8 @@ def add_entry(request):
     else:
         form = AddEntryForm()
 
-    return render(request, 'calculator/add_entry.html')
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'calculator/add_entry.html', context=context)

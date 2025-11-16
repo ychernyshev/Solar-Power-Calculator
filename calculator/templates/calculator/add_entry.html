@@ -2,5 +2,9 @@
 
 {% block title %}{% endblock %}
 {% block content %}
-
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Add entry</button>
+    </form>
 {% endblock %}
