@@ -56,11 +56,11 @@
             <th scope="col" class="text-center">Power</th>
             <th scope="col" class="text-center">Morning indicators</th>
             <th scope="col" class="text-center">Afternoon indicators</th>
+            <th scope="col" class="text-center">Afternoon indicators</th>
             <th scope="col" class="text-center">Evening indicators</th>
-            <th scope="col" class="text-center">Evening indicators</th>
-            <th scope="col" class="text-center">Energy cost (UAH)</th>
-            <th scope="col" class="text-center">Total cost (UAH)</th>
-            <th scope="col" class="text-center">Tariff (UAH)</th>
+            <th scope="col" class="text-center">Energy generated</th>
+            <th scope="col" class="text-center">Total cost</th>
+            <th scope="col" class="text-center">Tariff</th>
         </tr>
         </thead>
         <tbody>
@@ -69,12 +69,12 @@
             <td class="text-center">{{ item.date|date:"d.m.Y" }}</td>
             <td class="text-center">{{ item.power }}</td>
             <td class="text-center">{{ item.weather }}/</td>
-            <td class="text-center">{{ item.morning_data_charge }} - {{ item.morning_data_price }}</td>
-            <td class="text-center">{{ item.afternoon_data_charge }}{{ item.afternoon_data_price }}</td>
-            <td class="text-center">{{ item.evening_data_charge }}{{ item.evening_data_price }}</td>
-            <td class="text-center">{{ item.full_day_power|floatformat:2 }}</td>
-            <td class="text-center">{{ item.full_day_cost|floatformat:2 }}</td>
-            <td class="text-center"><span class="badge text-bg-secondary">4.32</span></td>
+            <td class="text-center">{{ item.morning_data_charge }}W - {{ item.morning_data_price }} UAH</td>
+            <td class="text-center">{{ item.afternoon_data_charge }}W - {{ item.afternoon_data_price }} UAH</td>
+            <td class="text-center">{{ item.evening_data_charge }}W - {{ item.evening_data_price }} UAH</td>
+            <td class="text-center"><span class="badge text-bg-secondary">{{ item.full_day_power|floatformat:2 }}W</span></td>
+            <td class="text-center"><span class="badge text-bg-secondary">{{ item.full_day_cost|floatformat:2 }} UAH</span></td>
+            <td class="text-center">4.32 UAH</td>
         </tr>
         {% endfor %}
         </tbody>
