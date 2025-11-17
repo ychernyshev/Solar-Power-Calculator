@@ -21,13 +21,13 @@
             Cost of generated power
         </button>
     </li>
-<!--    <li class="nav-item" role="presentation">-->
-<!--        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact"-->
-<!--                type="button" role="tab" aria-controls="contact" aria-selected="false">-->
-<!--            <canvas class="my-4 w-100 mb-5" id="myChart" width="1507" height="636"-->
-<!--                    style="display: block; box-sizing: border-box; height: 636px; width: 1507px;"></canvas>-->
-<!--        </button>-->
-<!--    </li>-->
+    <!--    <li class="nav-item" role="presentation">-->
+    <!--        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact"-->
+    <!--                type="button" role="tab" aria-controls="contact" aria-selected="false">-->
+    <!--            <canvas class="my-4 w-100 mb-5" id="myChart" width="1507" height="636"-->
+    <!--                    style="display: block; box-sizing: border-box; height: 636px; width: 1507px;"></canvas>-->
+    <!--        </button>-->
+    <!--    </li>-->
 </ul>
 
 <!-- Контент табів -->
@@ -45,7 +45,8 @@
 
 
 <div class="mt-5 mb-5">
-    <h4 class="text-uppercase">total generated power: <span class="badge text-bg-secondary">{{ total|floatformat:2 }}W</span></h4>
+    <h4 class="text-uppercase">total generated power: <span
+            class="badge text-bg-secondary">{{ total|floatformat:2 }}W</span></h4>
 </div>
 
 
@@ -77,13 +78,40 @@
             <td class="text-center">{{ item.morning_data_charge }}W - {{ item.morning_data_price }} UAH</td>
             <td class="text-center">{{ item.afternoon_data_charge }}W - {{ item.afternoon_data_price }} UAH</td>
             <td class="text-center">{{ item.evening_data_charge }}W - {{ item.evening_data_price }} UAH</td>
-            <td class="text-center"><span class="badge text-bg-secondary">{{ item.full_day_power|floatformat:2 }}W</span></td>
-            <td class="text-center"><span class="badge text-bg-secondary">{{ item.full_day_cost|floatformat:2 }} UAH</span></td>
+            <td class="text-center"><span
+                    class="badge text-bg-secondary">{{ item.full_day_power|floatformat:2 }}W</span></td>
+            <td class="text-center"><span
+                    class="badge text-bg-secondary">{{ item.full_day_cost|floatformat:2 }} UAH</span></td>
             <td class="text-center">4.32 UAH</td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
+    <div class="col-xxl-12 d-flex justify-content-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if entries_numbers.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ entries_numbers.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+
+                {% for page in entries_numbers.paginator.page_range %}
+                {% if page > entries_numbers.number|add:-5 and page < entries_numbers.number|add:5 %}
+                <li class="page-item {% if page == entries_numbers.number %}active{% endif %}">
+                    <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if entries_numbers.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ entries_numbers.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
 </div>
 
 {% endblock %}
