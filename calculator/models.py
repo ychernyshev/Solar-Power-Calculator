@@ -59,6 +59,10 @@ class DataEntryLineModel(models.Model):
         except(TypeError, ZeroDivisionError):
             return 0.0
 
+    @classmethod
+    def total_generated_power(cls):
+        return cls.objects.aggregate(total=models.Sum('full_day_power'))['total'] or 0
+
 
     def save(self, *args, **kwargs):
         calculated_power = self._calculate_full_day_power()
