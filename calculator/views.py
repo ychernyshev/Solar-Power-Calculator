@@ -9,7 +9,8 @@ from calculator.models import DataEntryLineModel
 # Create your views here.
 def index(request):
     entries = DataEntryLineModel.objects.all().order_by('date')
-    total = DataEntryLineModel.total_generated_power()
+    total_power = DataEntryLineModel.total_generated_power()
+    total_cost = DataEntryLineModel.total_cost_power()
 
     form, response = handle_entry_form(request)
     if response:
@@ -27,7 +28,8 @@ def index(request):
 
     context = {
         'entries': entries,
-        'total': total,
+        'total_power': total_power,
+        'total_cost': total_cost,
         'form': form,
         'labels': labels,
         'power_values': power_values,

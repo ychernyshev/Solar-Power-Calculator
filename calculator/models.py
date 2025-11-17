@@ -55,11 +55,9 @@ class DataEntryLineModel(models.Model):
                         return 200
                     # return ((self.evening_data_charge - self.morning_data_charge) - 6) * 20.48 + (
                     #         ((self.evening_data_price - self.morning_data_price) - 0.60) / 43.2) * 10000
-
-
-
         except(TypeError, ZeroDivisionError):
             return 0.0
+
 
     def _calculate_full_day_cost(self):
         try:
@@ -98,9 +96,16 @@ class DataEntryLineModel(models.Model):
         except(TypeError, ZeroDivisionError):
             return 0.0
 
+
     @classmethod
     def total_generated_power(cls):
         return cls.objects.aggregate(total=models.Sum('full_day_power'))['total'] or 0
+
+
+    @classmethod
+    def total_cost_power(cls):
+        return cls.objects.aggregate(total=models.Sum('full_day_cost'))['total'] or 0
+
 
     def save(self, *args, **kwargs):
         calculated_power = self._calculate_full_day_power()

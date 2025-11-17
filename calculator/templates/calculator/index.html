@@ -44,9 +44,16 @@
 </div>
 
 
-<div class="mt-5 mb-5">
-    <h4 class="text-uppercase">total generated power: <span
-            class="badge text-bg-secondary">{{ total|floatformat:2 }}W</span></h4>
+<div class="row mt-5 mb-5">
+    <div class="col-xxl-4">
+        <h4 class="text-uppercase">total generated power: <span
+                class="badge text-bg-secondary">{{ total_power|floatformat:2 }}W</span></h4>
+    </div>
+    <div class="col-xxl-4">
+        <h4 class="text-uppercase">cost of generated power: <span
+                class="badge text-bg-secondary">{{ total_cost|floatformat:2 }}UAH</span></h4>
+    </div>
+    <div class="col-xxl-4"></div>
 </div>
 
 
