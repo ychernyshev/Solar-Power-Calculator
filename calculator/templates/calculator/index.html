@@ -82,13 +82,13 @@
             <td class="text-center">{{ item.date|date:"d.m.Y" }}</td>
             <td class="text-center">{{ item.power }}</td>
             <td class="text-center">{{ item.weather }}/</td>
-            <td class="text-center">{{ item.morning_data_charge }}W - {{ item.morning_data_price }} UAH</td>
-            <td class="text-center">{{ item.afternoon_data_charge }}W - {{ item.afternoon_data_price }} UAH</td>
-            <td class="text-center">{{ item.evening_data_charge }}W - {{ item.evening_data_price }} UAH</td>
+            <td class="text-center">{{ item.morning_data_charge }}% - {{ item.morning_data_price }} UAH</td>
+            <td class="text-center">{{ item.afternoon_data_charge }}% - {{ item.afternoon_data_price }} UAH</td>
+            <td class="text-center">{{ item.evening_data_charge }}% - {{ item.evening_data_price }} UAH</td>
             <td class="text-center"><span
-                    class="badge text-bg-secondary">{{ item.full_day_power|floatformat:2 }}W</span></td>
+                    class="badge text-bg-secondary">{{ item.full_day_power|floatformat:2 }}%</span></td>
             <td class="text-center"><span
-                    class="badge text-bg-secondary">{{ item.full_day_cost|floatformat:2 }} UAH</span></td>
+                    class="badge text-bg-secondary">{{ item.full_day_cost|floatformat:2 }}UAH</span></td>
             <td class="text-center">4.32 UAH</td>
         </tr>
         {% endfor %}
