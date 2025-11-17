@@ -9,10 +9,10 @@
     <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarSupportedContent">
       <ul class="navbar-nav mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link {% if request.path == dashboard %} text-primary {% else %} text-secondary {% endif %}" aria-current="page" href="{% url 'calculator:dashboard' %}">Dashboard</a>
+          <a class="nav-link {% if request.path == dashboard %} text-dark bold underline {% else %} text-primary {% endif %}" aria-current="page" href="{% url 'calculator:dashboard' %}">Dashboard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.path == add_entry %} text-primary {% else %} text-secondary {% endif %}" href="{% url 'calculator:add_entry' %}">Add entry</a>
+          <a class="nav-link {% if request.path == add_entry %} text-dark bold underline {% else %} text-primary {% endif %}" href="{% url 'calculator:add_entry' %}">Add entry</a>
         </li>
       </ul>
     </div>
