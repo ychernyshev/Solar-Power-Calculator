@@ -83,10 +83,16 @@
             <td class="text-center">{{ item.power }}</td>
             <td class="text-center">{{ item.weather }}/</td>
             <td class="text-center">{{ item.morning_data_charge }}% - {{ item.morning_data_price }} UAH</td>
-            <td class="text-center">{{ item.afternoon_data_charge }}% - {{ item.afternoon_data_price }} UAH</td>
+            <td class="text-center">
+                {% if item.afternoon_data_charge == 0 and item.afternoon_data_price == 0 %}
+                    -
+                {% else %}
+                    {{ item.afternoon_data_charge }}% - {{ item.afternoon_data_price }} UAH
+                {% endif %}
+            </td>
             <td class="text-center">{{ item.evening_data_charge }}% - {{ item.evening_data_price }} UAH</td>
             <td class="text-center"><span
-                    class="badge text-bg-secondary">{{ item.full_day_power|floatformat:2 }}%</span></td>
+                    class="badge text-bg-secondary">{{ item.full_day_power|floatformat:2 }}W</span></td>
             <td class="text-center"><span
                     class="badge text-bg-secondary">{{ item.full_day_cost|floatformat:2 }}UAH</span></td>
             <td class="text-center">4.32 UAH</td>
