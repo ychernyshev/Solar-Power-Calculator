@@ -44,12 +44,14 @@ class AddEntryForm(forms.Form):
         attrs={
             'class': 'form-control',
             'placeholder': 'Enter charge level here',
+            'value': 0,
         }
     ))
     afternoon_data_price = forms.FloatField(label='', min_value=0, widget=forms.NumberInput(
         attrs={
             'class': 'form-control',
-            'placeholder': 'Enter price here'
+            'placeholder': 'Enter price here',
+            'value': 0,
         }
     ))
     evening_data_charge = forms.IntegerField(label='', min_value=0, widget=forms.NumberInput(
