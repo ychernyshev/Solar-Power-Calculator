@@ -25,78 +25,53 @@ class DataEntryLineModel(models.Model):
 
     def _calculate_full_day_power(self):
         try:
-            if self.afternoon_data_charge > 0:
-                if self.afternoon_data_charge < self.evening_data_charge:
-                    return (self.evening_data_charge - self.morning_data_charge) * 20.48 + (
-                            (self.evening_data_price - self.morning_data_price) / 43.2) * 10000
-                # if self.afternoon_data_charge > self.evening_data_charge:
-                #     watt_error = (self.afternoon_data_charge - self.evening_data_charge) * 20.48
-                #     return ((((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100) - watt_error
-                if self.afternoon_data_charge > self.evening_data_charge:
-                    if 10 < self.afternoon_data_charge - self.morning_data_charge < 50:
-                        return 100
-                    if self.afternoon_data_charge - self.morning_data_charge < 10:
-                        return 200
+            if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
+                return 0
+            if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
+                return (self.evening_data_charge - self.afternoon_data_charge) * 20.48
+            if 0 < self.afternoon_data_charge < self.evening_data_charge:
+                return (self.evening_data_charge - self.afternoon_data_charge) * 20.48 + round(
+                    (((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100, 2)
+            if 0 < self.afternoon_data_charge > self.evening_data_charge:
+                if self.afternoon_data_charge - self.evening_data_charge <= 10:
+                    return 200
+                if self.afternoon_data_charge - self.afternoon_data_charge > 10:
+                    return 100
             if self.afternoon_data_charge == 0:
                 if self.morning_data_charge < self.evening_data_charge:
-                    return ((self.evening_data_charge - self.morning_data_charge) - 6) * 20.48 + (
-                            ((self.evening_data_price - self.morning_data_price) - 0.60) / 43.2) * 10000
-                if self.morning_data_charge > self.evening_data_charge:
-                    if self.evening_data_price - self.morning_data_price - 0.6 == 0:
-                        return (self.evening_data_charge - self.morning_data_charge) * 20.48
-                    if self.evening_data_price - self.morning_data_price - 0.6 != 0:
-                        return (self.evening_data_charge - self.morning_data_charge) * 20.48 + (
-                                ((self.evening_data_price - self.morning_data_price) - 0.60) / 43.2) * 10000
-                # return (((self.evening_data_price - self.morning_data_price) - 0.60) / 43.2) * 10000
-                if self.morning_data_charge > self.evening_data_charge:
-                    if 10 < self.morning_data_charge - self.evening_data_charge < 50:
-                        return 100
-                    if self.morning_data_charge - self.evening_data_charge < 10:
-                        return 200
-                    # return ((self.evening_data_charge - self.morning_data_charge) - 6) * 20.48 + (
-                    #         ((self.evening_data_price - self.morning_data_price) - 0.60) / 43.2) * 10000
+                    return (self.evening_data_charge - self.morning_data_charge - 6) * 20.48 + round(
+                        (((self.evening_data_price - self.morning_data_price - .6) * 100) / 43.2) * 100, 2)
+                if self.morning_data_charge - self.evening_data_charge <= 10:
+                    return 200
+                if self.morning_data_charge - self.evening_data_charge > 10:
+                    return 100
+            return 0.1
         except(TypeError, ZeroDivisionError):
             return 0.0
 
     def _calculate_full_day_cost(self):
         try:
-            if self.afternoon_data_price > 0:
-                if self.afternoon_data_charge < self.evening_data_charge:
-                    return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48 + (
-                            ((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100) / 1000) * 4.32
-                # if self.afternoon_data_charge > self.evening_data_charge:
-                #     if 10 < self.evening_data_charge - self.morning_data_charge < 30:
-                #         return 0.999792
-                #     if self.evening_data_charge - self.morning_data_charge < 10:
-                #         return 1.99584
-                if self.afternoon_data_charge > self.evening_data_charge:
-                    if 10 < self.afternoon_data_charge - self.evening_data_charge < 50:
-                        return 4.32 / 5
-                    if self.morning_data_charge - self.evening_data_charge < 10:
-                        return 4.32 / 10
-                    # cost_error = (self.afternoon_data_charge - self.evening_data_charge) * 20.48
-                    # if cost_error < 100:
-                    #     return (((((
-                    #                        self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100) / 1000) * 4.32 - (
-                    #             (cost_error / 1000) * 4.32)
-                    # if cost_error >= 100:
-                    #     return (((((
-                    #                        self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100) / 1000) * 4.32 - (
-                    #             (cost_error / 100) * 4.32)
-                    # return 0
+            if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
+                return 0.0
+            if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
+                return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48) / 1000) * 4.32
+            if 0 < self.afternoon_data_charge < self.evening_data_charge:
+                return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48) / 1000) * 4.32 + (
+                            self.evening_data_price - self.afternoon_data_price)
+            if 0 < self.afternoon_data_charge > self.evening_data_charge:
+                if self.afternoon_data_charge - self.evening_data_charge <= 10:
+                    return 0.86
+                if self.afternoon_data_charge - self.evening_data_charge > 10:
+                    return 0.43
             if self.afternoon_data_price == 0:
-                if self.morning_data_charge > self.evening_data_charge:
-                    if 10 < self.morning_data_charge - self.evening_data_charge < 50:
-                        return 0.43
-                    if self.morning_data_charge - self.evening_data_charge < 10:
-                        return 0.86
                 if self.morning_data_charge < self.evening_data_charge:
-                    # return ((((self.evening_data_price - (self.morning_data_price + 0.60)) / 43.2) * 100) / 1000) * 4.32
-                    return ((((self.evening_data_charge - self.morning_data_charge - 6) * 20.48 + (
-                            ((self.evening_data_price - (
-                                        self.morning_data_price + 0.60)) * 100) / 43.2) * 100)) / 1000) * 4.32
-                if self.evening_data_price - self.morning_data_price == 0:
-                    return (((self.evening_data_charge - self.morning_data_charge) * 20.48) / 1000) * 4.32
+                    return (((self.evening_data_charge - self.morning_data_charge - 6) * 20.48) / 1000) * 4.32 + (
+                                self.evening_data_price - self.morning_data_price - 0.6)
+                if self.morning_data_charge - self.evening_data_charge <= 10:
+                    return 0.86
+                if self.morning_data_charge - self.evening_data_charge > 10:
+                    return 0.43
+            return 0.1
         except(TypeError, ZeroDivisionError):
             return 0.0
 
