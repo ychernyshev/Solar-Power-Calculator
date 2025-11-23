@@ -84,8 +84,10 @@
             <td class="text-center">{{ item.weather }}/</td>
             <td class="text-center">{{ item.morning_data_charge }}% - {{ item.morning_data_price }} UAH</td>
             <td class="text-center">
-                {% if item.afternoon_data_charge == 0 and item.afternoon_data_price == 0 %}
-                    -
+                {% if item.get_empty_day_message %}
+                    {{ item.get_empty_day_message }}
+                {% elif item.afternoon_data_charge == 0 %}
+                    - -
                 {% else %}
                     {{ item.afternoon_data_charge }}% - {{ item.afternoon_data_price }} UAH
                 {% endif %}

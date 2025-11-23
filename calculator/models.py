@@ -10,7 +10,7 @@ class DataEntryLineModel(models.Model):
         ('800', '800'),
     ]
 
-    date = models.DateField(default=False, verbose_name='Дата')
+    date = models.DateField(verbose_name='Дата')
     power = models.CharField(choices=POWER, max_length=3, default='600', verbose_name='Потужність системи')
     weather = models.CharField(max_length=22, verbose_name='Погода')
     morning_data_charge = models.IntegerField(verbose_name='Ранковий рівень заряду')
@@ -22,6 +22,7 @@ class DataEntryLineModel(models.Model):
     full_day_power = models.FloatField(blank=True, verbose_name='Вироблена потужність за день')
     full_day_cost = models.FloatField(blank=True, null=True, verbose_name='Вартість виробленої енергії за день')
     power_tariff = models.FloatField(verbose_name='Вартість за Кв', default='4.32')
+
 
     def _calculate_full_day_power(self):
         try:
@@ -49,6 +50,7 @@ class DataEntryLineModel(models.Model):
         except(TypeError, ZeroDivisionError):
             return 0.0
 
+
     def _calculate_full_day_cost(self):
         try:
             if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
@@ -75,13 +77,22 @@ class DataEntryLineModel(models.Model):
         except(TypeError, ZeroDivisionError):
             return 0.0
 
+
+    def get_empty_day_message(self):
+        if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
+            return '0% - 0.0 UAH'
+        return None
+
+
     @classmethod
     def total_generated_power(cls):
         return cls.objects.aggregate(total=models.Sum('full_day_power'))['total'] or 0
 
+
     @classmethod
     def total_cost_power(cls):
         return cls.objects.aggregate(total=models.Sum('full_day_cost'))['total'] or 0
+
 
     def save(self, *args, **kwargs):
         calculated_power = self._calculate_full_day_power()
