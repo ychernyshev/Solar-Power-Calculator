@@ -1,5 +1,6 @@
 {% url 'calculator:dashboard' as dashboard %}
 {% url 'calculator:add_entry' as add_entry %}
+{% url 'calculator:settings' as settings %}
 <nav class="navbar navbar-expand-lg bg-body-tertiary mt-5">
   <div class="container-fluid">
     <a class="navbar-brand bg-warning p-3 rounded-5 text-light" style="box-shadow: .5rem .5rem 1rem 0 rgba(255, 193, 7, .9)" href="{% url 'calculator:dashboard' %}">Solar Power Calculator</a>
@@ -13,6 +14,9 @@
         </li>
         <li class="nav-item">
           <a class="nav-link {% if request.path == add_entry %} text-dark bold underline {% else %} text-primary {% endif %}" href="{% url 'calculator:add_entry' %}">Add entry</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == settings %} text-dark bold underline {% else %} text-primary {% endif %}" href="{% url 'calculator:settings' %}">Settings</a>
         </li>
       </ul>
     </div>

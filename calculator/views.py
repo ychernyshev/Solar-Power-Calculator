@@ -49,3 +49,6 @@ def add_entry(request):
     }
 
     return render(request, 'calculator/add_entry.html', context=context)
+
+def settings(request):
+    return render(request, 'calculator/settings.html')

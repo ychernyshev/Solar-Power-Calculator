@@ -6,4 +6,5 @@ urlpatterns = [
     path('', index, name='home'),
     path('dashboard/', index, name='dashboard'),
     path('add_entry/', add_entry, name='add_entry'),
+    path('settings/', settings, name='settings'),
 ]
