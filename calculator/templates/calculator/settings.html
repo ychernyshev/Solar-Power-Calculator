@@ -6,6 +6,11 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom mt-5 mb-5">
         <h4 class="text-uppercase">The app settings</h4>
     </div>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn bnt-secondary">Update power tariff</button>
+</form>
 {% endblock %}
 
 {% block script %}{% endblock %}

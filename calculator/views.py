@@ -1,9 +1,14 @@
-from django.contrib.admin.templatetags.admin_list import pagination
+from pyexpat.errors import messages
+from django.contrib import messages
+
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from calculator.services.handle_entry_form import handle_entry_form
-from calculator.models import DataEntryLineModel
+from calculator.models import DataEntryLineModel, CurrentTariffModel
+from calculator.forms import TariffUpdateForm
 
 
 # Create your views here.
@@ -51,4 +56,20 @@ def add_entry(request):
     return render(request, 'calculator/add_entry.html', context=context)
 
 def settings(request):
-    return render(request, 'calculator/settings.html')
+    tariff_instance = CurrentTariffModel.load()
+
+    if request.method == 'POST':
+        form = TariffUpdateForm(request.POST, instance=tariff_instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'The power tariff has been updated to {tariff_instance.power_tariff:.2f} ₴')
+            return HttpResponseRedirect(reverse('calculator:settings'))
+    else:
+        form = TariffUpdateForm(instance=tariff_instance)
+
+    context = {
+        'form': form,
+        'current_tariff': tariff_instance.power_tariff,
+    }
+
+    return render(request, 'calculator/settings.html', context=context)

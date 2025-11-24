@@ -2,6 +2,8 @@ from datetime import date
 
 from django import forms
 
+from calculator.models import CurrentTariffModel
+
 
 class CurrentDate(forms.DateInput):
     input_type = 'date'
@@ -66,3 +68,15 @@ class AddEntryForm(forms.Form):
             'placeholder': 'Enter price here'
         }
     ))
+
+
+class TariffUpdateForm(forms.ModelForm):
+    power_tariff = forms.FloatField(label='', widget=forms.NumberInput(
+        attrs={
+            'class': 'form-control',
+        }
+    ))
+
+    class Meta:
+        model = CurrentTariffModel
+        fields = ['power_tariff']
