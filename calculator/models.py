@@ -102,3 +102,7 @@ class DataEntryLineModel(models.Model):
         self.full_day_cost = calculated_cost
 
         super().save(*args, **kwargs)
+
+
+    class Meta:
+        ordering = ['-date']
