@@ -8,7 +8,7 @@ from calculator.models import DataEntryLineModel
 
 # Create your views here.
 def index(request):
-    entries = DataEntryLineModel.objects.all().order_by('date')
+    entries = DataEntryLineModel.objects.all()
     total_power = DataEntryLineModel.total_generated_power()
     total_cost = DataEntryLineModel.total_cost_power()
 
@@ -22,12 +22,11 @@ def index(request):
     cost_values = [entry.full_day_cost for entry in entries]
 
     # pagination
-    entries_paginator = Paginator(entries, 50)
+    entries_paginator = Paginator(entries, 25)
     entries_number = request.GET.get('page')
     entries_numbers = entries_paginator.get_page(entries_number)
 
     context = {
-        'entries': entries,
         'total_power': total_power,
         'total_cost': total_cost,
         'form': form,

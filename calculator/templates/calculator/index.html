@@ -77,7 +77,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for item in entries %}
+        {% for item in entries_numbers %}
         <tr>
             <td class="text-center">{{ item.date|date:"d.m.Y" }}</td>
             <td class="text-center">{{ item.power }}</td>
@@ -105,24 +105,24 @@
     <div class="col-xxl-12 d-flex justify-content-center">
         <nav aria-label="Page navigation example">
             <ul class="pagination">
-                {% if entries_numbers.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ entries_numbers.previous_page_number }}">Previous</a>
+                    {% if entries_numbers.has_previous %}
+                        <a class="page-link" href="?page={{ entries_numbers.previous_page_number }}">Previous</a>
+                    {% endif %}
                 </li>
-                {% endif %}
 
                 {% for page in entries_numbers.paginator.page_range %}
-                {% if page > entries_numbers.number|add:-5 and page < entries_numbers.number|add:5 %}
-                <li class="page-item {% if page == entries_numbers.number %}active{% endif %}">
-                    <a class="page-link" href="?page={{ page }}">{{ page }}</a>
-                </li>
-                {% endif %}
+                    {% if page > entries_numbers.number|add:-5 and page < entries_numbers.number|add:5 %}
+                        <li class="page-item {% if page == entries_numbers.number %}active{% endif %}">
+                            <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                        </li>
+                    {% endif %}
                 {% endfor %}
 
                 {% if entries_numbers.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ entries_numbers.next_page_number }}">Next</a>
-                </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ entries_numbers.next_page_number }}">Next</a>
+                    </li>
                 {% endif %}
             </ul>
         </nav>
