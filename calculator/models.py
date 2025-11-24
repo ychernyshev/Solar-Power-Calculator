@@ -2,17 +2,47 @@ from django.db import models
 from django.db.models import Sum
 
 
+# ====================================================================
+# MODEL 1: SINGLETON FOR CURRENT TARIFF
+# ====================================================================
+
+class CurrentTariffModel(models.Model):
+    power_tariff = models.FloatField(verbose_name='Актуальна вартість за Кв', default=4.32)
+    last_updated = models.DateTimeField(auto_now=True, verbose_name='Дата оновлення')
+
+    class Meta:
+        verbose_name = 'Актуальний Тариф'
+        verbose_name_plural = 'Актуальний Тариф'
+
+    def __str__(self):
+        return f"Актуальний тариф: {self.power_tariff} UAH/Кв"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        try:
+            return cls.objects.get(pk=1)
+        except cls.DoesNotExist:
+            return cls.objects.create(pk=1)
+
+
+# ====================================================================
+# MODEL 2: ENTRIES
+# ====================================================================
+
 class DataEntryLineModel(models.Model):
+    # --- КОНСТАНТИ ---
     POWER = [
         ('200', '200'), ('400', '400'), ('600', '600'), ('800', '800'),
     ]
 
     UNIT_CONVERSION_FACTOR = 20.48  # Коефіцієнт перетворення заряду в потужність
-    TARIFF_RATE = 4.32  # Вартість за кВт
     CHARGE_DIFFERENCE_THRESHOLD = 10  # Порогова різниця заряду
     MORNING_CORRECTION_CHARGE = 6  # Корекція ранкового заряду
     MORNING_CORRECTION_PRICE = 0.6  # Корекція ранкової ціни
-
 
     date = models.DateField(verbose_name='Дата')
     power = models.CharField(choices=POWER, max_length=3, default='600', verbose_name='Потужність системи')
@@ -25,17 +55,17 @@ class DataEntryLineModel(models.Model):
     evening_data_price = models.FloatField(verbose_name='Вартість використаної енергії на вечір')
     full_day_power = models.FloatField(blank=True, verbose_name='Вироблена потужність за день')
     full_day_cost = models.FloatField(blank=True, null=True, verbose_name='Вартість виробленої енергії за день')
-    power_tariff = models.FloatField(verbose_name='Вартість за Кв', default=TARIFF_RATE)
-
+    power_tariff = models.FloatField(verbose_name='Вартість за Кв')
 
     def _calculate_power_delta_based_on_price(self, start_cost, end_cost):
         price_diff = end_cost - start_cost
 
         # Look like: round((((evening_cost - morning_cost) * 100) / TARIFF) * 100, 2)
-        if self.TARIFF_RATE == 0:
-            return 0.0
+        if self.power_tariff == 0:
+            return 0
 
-        return round(((price_diff * 100) / self.TARIFF_RATE) * 100, 2)
+        # Look like: round((((evening_cost - morning_cost) * 100) / TARIFF) * 100, 2)
+        return round(((price_diff * 100) / self.power_tariff) * 100, 2)
 
     def _handle_charge_difference(self, charge_diff):
         """This calculates when the solar charge decreased (afternoon > evening or morning > evening)."""
@@ -44,12 +74,11 @@ class DataEntryLineModel(models.Model):
         else:
             return 100
 
-
     def _calculate_full_day_power(self):
         try:
             # 1. Scenario: 0 energy generation during the day
             if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
-                return 0.0
+                return 0
 
             # 2. Scenario: There is a daytime charge, and it is smaller than the evening charge
             if 0 < self.afternoon_data_charge < self.evening_data_charge:
@@ -105,7 +134,7 @@ class DataEntryLineModel(models.Model):
 
             # Function that returns the base cost from the charge difference
             def get_base_cost(charge_diff):
-                return ((charge_diff * self.UNIT_CONVERSION_FACTOR) / 1000) * self.TARIFF_RATE
+                return ((charge_diff * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff
 
             # 2. Scenario: There is a daytime charge, and it is smaller than the evening charge
             if 0 < self.afternoon_data_charge < self.evening_data_charge:
@@ -156,7 +185,6 @@ class DataEntryLineModel(models.Model):
         except (TypeError, ZeroDivisionError):
             return 0
 
-
     def get_empty_day_message(self):
         if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
             return '0% - 0.0 UAH'
@@ -171,11 +199,16 @@ class DataEntryLineModel(models.Model):
         return cls.objects.aggregate(total=Sum('full_day_cost'))['total'] or 0
 
     def save(self, *args, **kwargs):
+        if not self.pk:
+            current_tariff_obj = CurrentTariffModel.load()
+            self.power_tariff = current_tariff_obj.power_tariff
+
         self.full_day_power = self._calculate_full_day_power()
         self.full_day_cost = self._calculate_full_day_cost()
+
         super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['-date']
-        verbose_name = 'Запис'
-        verbose_name_plural = 'Записи'
+        verbose_name = 'entry'
+        verbose_name_plural = 'Entries'
