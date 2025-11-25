@@ -4,7 +4,9 @@
 
 {% block content %}
 
-<h5 class="mt-5">The form adds a new entry on a new line on the next day of power generation with a solar system</h5>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom mt-5 mb-5">
+    <h4 class="text-uppercase">The form adds a new entry on a new line on the next day of power generation with a solar system</h4>
+</div>
 <div class="card-body">
     <form method="post" class="card-text">
         {% csrf_token %}
