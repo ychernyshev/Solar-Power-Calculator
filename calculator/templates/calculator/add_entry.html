@@ -5,16 +5,17 @@
 {% block content %}
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom mt-5 mb-5">
-    <h4 class="text-uppercase">The form adds a new entry on a new line on the next day of power generation with a solar system</h4>
+    <h4 class="text-uppercase">The form adds a new entry on a new line on the next day of power generation with a solar
+        system</h4>
 </div>
 <div class="card-body">
-    <form method="post" class="card-text">
+    <form class="card-text" method="post">
         {% csrf_token %}
         <div class="row">
             <div class="col-xxl-3 bg-light p-3">
                 <div class="col-xxl-12">
                     <div class="mb-3">
-                        <label for="{{ form.date.id_for_label }}" class="form-label">Дата</label>
+                        <label class="form-label" for="{{ form.date.id_for_label }}">Дата</label>
                         {{ form.date }}
                         {% if form.date.errors %}
                         <div class="text-danger">{{ form.date.errors }}</div>
@@ -23,7 +24,7 @@
                 </div>
                 <div class="col-xxl-12">
                     <div class="mb-3">
-                        <label for="{{ form.power.id_for_label }}" class="form-label">Джерело енергії</label>
+                        <label class="form-label" for="{{ form.power.id_for_label }}">Джерело енергії</label>
                         {{ form.power }}
                         {% if form.power.errors %}
                         <div class="text-danger">{{ form.power.errors }}</div>
@@ -32,7 +33,7 @@
                 </div>
                 <div class="col-xxl-12">
                     <div class="mb-3">
-                        <label for="{{ form.weather.id_for_label }}" class="form-label">Погода</label>
+                        <label class="form-label" for="{{ form.weather.id_for_label }}">Погода</label>
                         {{ form.weather }}
                         {% if form.weather.errors %}
                         <div class="text-danger">{{ form.weather.errors }}</div>
@@ -44,7 +45,7 @@
                 <div class="row">
                     <div class="col-xxl-6">
                         <div class="mb-3">
-                            <label for="{{ form.morning_data_charge.id_for_label }}" class="form-label">Morning
+                            <label class="form-label" for="{{ form.morning_data_charge.id_for_label }}">Morning
                                 charge
                                 (%)</label>
                             {{ form.morning_data_charge }}
@@ -55,7 +56,7 @@
                     </div>
                     <div class="col-xxl-6">
                         <div class="mb-3">
-                            <label for="{{ form.morning_data_price.id_for_label }}" class="form-label">Morning
+                            <label class="form-label" for="{{ form.morning_data_price.id_for_label }}">Morning
                                 used
                                 energy price
                                 (₴)</label>
@@ -69,7 +70,7 @@
                 <div class="row">
                     <div class="col-xxl-6">
                         <div class="mb-3">
-                            <label for="{{ form.afternoon_data_charge.id_for_label }}" class="form-label">Afternoon
+                            <label class="form-label" for="{{ form.afternoon_data_charge.id_for_label }}">Afternoon
                                 charge
                                 (%)</label>
                             {{ form.afternoon_data_charge }}
@@ -80,7 +81,7 @@
                     </div>
                     <div class="col-xxl-6">
                         <div class="mb-3">
-                            <label for="{{ form.afternoon_data_price.id_for_label }}" class="form-label">Afternoon
+                            <label class="form-label" for="{{ form.afternoon_data_price.id_for_label }}">Afternoon
                                 used
                                 energy price
                                 (₴)</label>
@@ -94,7 +95,7 @@
                 <div class="row">
                     <div class="col-xxl-6">
                         <div class="mb-3">
-                            <label for="{{ form.evening_data_charge.id_for_label }}" class="form-label">Evening
+                            <label class="form-label" for="{{ form.evening_data_charge.id_for_label }}">Evening
                                 charge
                                 (%)</label>
                             {{ form.evening_data_charge }}
@@ -105,7 +106,7 @@
                     </div>
                     <div class="col-xxl-6">
                         <div class="mb-3">
-                            <label for="{{ form.evening_data_price.id_for_label }}" class="form-label">Evening
+                            <label class="form-label" for="{{ form.evening_data_price.id_for_label }}">Evening
                                 used
                                 energy price
                                 (₴)</label>
@@ -118,8 +119,11 @@
                 </div>
             </div>
         </div>
-
-        <button type="submit" class="btn btn-primary w-25">Add entry</button>
+        <div class="row">
+                <div class="col-xxl-2">
+                    <button class="btn btn-secondary w-100" type="submit">Add entry</button>
+                </div>
+            </div>
     </form>
 </div>
 
