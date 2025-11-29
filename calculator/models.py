@@ -46,7 +46,7 @@ class DataEntryLineModel(models.Model):
 
     date = models.DateField(verbose_name='Дата')
     power = models.CharField(choices=POWER, max_length=3, default='600', verbose_name='Потужність системи')
-    weather = models.CharField(max_length=22, verbose_name='Погода')
+    weather = models.ManyToManyField('WeatherCondition', db_index=True, related_name='weather', verbose_name='Погода')
     morning_data_charge = models.IntegerField(verbose_name='Ранковий рівень заряду')
     morning_data_price = models.FloatField(verbose_name='Вартість використаної енергії на ранок')
     afternoon_data_charge = models.IntegerField(verbose_name='Денний рівень заряду', default=0)
@@ -212,3 +212,10 @@ class DataEntryLineModel(models.Model):
         ordering = ['-date']
         verbose_name = 'entry'
         verbose_name_plural = 'Entries'
+
+
+class WeatherCondition(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name

@@ -7,11 +7,14 @@ from .models import DataEntryLineModel
 # Register your models here.
 @admin.register(DataEntryLineModel)
 class DataEntryLineAdmin(admin.ModelAdmin):
-    list_display = ['date', 'display_power', 'weather',
+    list_display = ['date', 'display_power', 'get_weather',
                     'display_morning_charge', 'display_morning_price',
                     'display_afternoon_charge', 'display_afternoon_price',
                     'display_evening_charge', 'display_evening_price',
                     'display_full_day_power', 'display_full_day_cost', 'display_power_tariff']
+
+    def get_weather(self, obj):
+        return '\n'.join([item.weather for item in obj.weather.all()])
 
 
     def display_power(self,obj):
