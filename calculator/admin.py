@@ -1,20 +1,25 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import DataEntryLineModel
+from .models import DataEntryLineModel, WeatherCondition
 
 
 # Register your models here.
 @admin.register(DataEntryLineModel)
 class DataEntryLineAdmin(admin.ModelAdmin):
-    list_display = ['date', 'display_power', 'get_weather',
-                    'display_morning_charge', 'display_morning_price',
-                    'display_afternoon_charge', 'display_afternoon_price',
-                    'display_evening_charge', 'display_evening_price',
-                    'display_full_day_power', 'display_full_day_cost', 'display_power_tariff']
+    list_display = [
+        'date', 'display_power', 'get_weather',
+        'display_morning_charge', 'display_morning_price',
+        'display_afternoon_charge', 'display_afternoon_price',
+        'display_evening_charge', 'display_evening_price',
+        'display_full_day_power', 'display_full_day_cost', 'display_power_tariff'
+    ]
 
     def get_weather(self, obj):
-        return '\n'.join([item.weather for item in obj.weather.all()])
+        # беремо name з кожного WeatherCondition
+        return ', '.join([item.name for item in obj.weather.all()])
+
+    get_weather.short_description = "Погода"
 
 
     def display_power(self,obj):
@@ -77,3 +82,8 @@ class DataEntryLineAdmin(admin.ModelAdmin):
         return format_html('{}₴', obj.power_tariff)
 
     display_power_tariff.short_description = 'Вартість за Кв'
+
+
+@admin.register(WeatherCondition)
+class WeatherConditionAdmin(admin.ModelAdmin):
+    list_display = ['name']
