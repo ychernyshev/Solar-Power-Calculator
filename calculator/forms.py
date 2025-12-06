@@ -2,7 +2,7 @@ from datetime import date
 
 from django import forms
 
-from calculator.models import CurrentTariffModel, WeatherCondition
+from calculator.models import CurrentTariffModel, DataEntryLineModel, WeatherCondition
 
 
 class CurrentDate(forms.DateInput):
@@ -16,10 +16,7 @@ class AddEntryForm(forms.Form):
         initial=date.today()
     )
     power = forms.ChoiceField(label='',
-                              choices=[('200', '200'),
-                                       ('400', '400'),
-                                       ('600', '600'),
-                                       ('800', '800'), ],
+                              choices=DataEntryLineModel.POWER,
                               initial='600',
                               widget=forms.Select(
                                   attrs={
