@@ -20,10 +20,10 @@ class AddEntryForm(forms.Form):
                                        ('400', '400'),
                                        ('600', '600'),
                                        ('800', '800'), ],
+                              initial='600',
                               widget=forms.Select(
                                   attrs={
                                       'class': 'form-control',
-                                      'value': '600',
                                   }))
     weather = forms.ModelMultipleChoiceField(label='',
                                              queryset=WeatherCondition.objects.all(),
