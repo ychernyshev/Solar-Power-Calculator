@@ -74,116 +74,168 @@ class DataEntryLineModel(models.Model):
         else:
             return 100
 
+    # def _calculate_full_day_power(self):
+    #     try:
+    #         # 1. Scenario: 0 energy generation during the day
+    #         if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
+    #             return 0
+    #
+    #         # 2. Scenario: There is a daytime charge, and it is smaller than the evening charge
+    #         if 0 < self.afternoon_data_charge < self.evening_data_charge:
+    #             charge_diff = self.evening_data_charge - self.afternoon_data_charge
+    #             base_power = charge_diff * self.UNIT_CONVERSION_FACTOR
+    #
+    #             # processing constants under the same low-light scenarios
+    #             if self.afternoon_data_price == self.evening_data_price:
+    #                 return base_power
+    #             else:
+    #                 delta_power = self._calculate_power_delta_based_on_price(
+    #                     self.afternoon_data_price, self.evening_data_price)
+    #                 return base_power + delta_power
+    #
+    #         # 3. Scenario: The daytime solar charge is greater than the evening charge.
+    #         if self.afternoon_data_charge > 0 and self.afternoon_data_charge > self.evening_data_charge:
+    #             charge_diff = self.afternoon_data_charge - self.evening_data_charge
+    #             return self._handle_charge_difference(charge_diff)
+    #
+    #         # 4. Scenario: The daytime solar charge is equal to 0 (afternoon_data_charge == 0)
+    #         if self.afternoon_data_charge == 0:
+    #
+    #             # 4.1. Solar charge is growing (morning < evening)
+    #             if self.morning_data_charge < self.evening_data_charge:
+    #                 charge_diff = self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE
+    #                 base_power = charge_diff * self.UNIT_CONVERSION_FACTOR
+    #
+    #                 price_start = self.morning_data_price + self.MORNING_CORRECTION_PRICE
+    #                 delta_power = self._calculate_power_delta_based_on_price(
+    #                     price_start, self.evening_data_price)
+    #                 return base_power + delta_power
+    #
+    #             # 4.2. Solar charge is falling (morning > evening)
+    #             elif self.morning_data_charge > self.evening_data_charge:
+    #                 charge_diff = self.morning_data_charge - self.evening_data_charge
+    #                 return self._handle_charge_difference(charge_diff)
+    #
+    #             # 4.3. Solar Charge is the same (morning == evening)
+    #             elif self.morning_data_charge == self.evening_data_charge:
+    #                 return (self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR
+    #
+    #         # 5. Default scenario (if no one condition is true)
+    #         return 0
+    #
+    #     except (TypeError, ZeroDivisionError):
+    #         return 0
+
+    # def _calculate_full_day_cost(self):
+    #     try:
+    #         # 1. 0 energy generation during the day.
+    #         if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
+    #             return 0
+    #
+    #         # Function that returns the base cost from the charge difference
+    #         def get_base_cost(charge_diff):
+    #             return ((charge_diff * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff
+    #
+    #         # 2. Scenario: There is a daytime charge, and it is smaller than the evening charge
+    #         if 0 < self.afternoon_data_charge < self.evening_data_charge:
+    #             charge_diff = self.evening_data_charge - self.afternoon_data_charge
+    #             base_cost = get_base_cost(charge_diff)
+    #
+    #             if self.afternoon_data_price == self.evening_data_price:
+    #                 return base_cost
+    #             else:
+    #                 return base_cost + (self.evening_data_price - self.afternoon_data_price)
+    #
+    #         # 3. Scenario: The daytime solar charge is greater than the evening charge
+    #         if 0 < self.afternoon_data_charge > self.evening_data_charge:
+    #             charge_diff = self.afternoon_data_charge - self.evening_data_charge
+    #
+    #             if charge_diff <= self.CHARGE_DIFFERENCE_THRESHOLD:
+    #                 return 0.86
+    #             else:
+    #                 return 0.43
+    #
+    #         # 4. Scenario: The daytime solar charge is equal to 0 (afternoon_data_charge == 0)
+    #         if self.afternoon_data_price == 0:
+    #
+    #             # 4.1. Solar charge is growing (morning < evening)
+    #             if self.morning_data_charge < self.evening_data_charge:
+    #                 charge_diff = self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE
+    #                 base_cost = get_base_cost(charge_diff)
+    #
+    #                 price_diff = self.evening_data_price - (self.morning_data_price + self.MORNING_CORRECTION_PRICE)
+    #                 return base_cost + price_diff
+    #
+    #             # 4.2. Solar Charge is the same (morning == evening)
+    #             elif self.morning_data_charge > self.evening_data_charge:
+    #                 charge_diff = self.morning_data_charge - self.evening_data_charge
+    #                 if charge_diff <= self.CHARGE_DIFFERENCE_THRESHOLD:
+    #                     return 0.86
+    #                 else:
+    #                     return 0.43
+    #
+    #             # 4.3. Solar Charge is the same (morning == evening)
+    #             elif self.morning_data_charge == self.evening_data_charge:
+    #                 charge_diff = self.evening_data_charge - self.afternoon_data_charge
+    #                 return get_base_cost(charge_diff)
+    #
+    #         # 5. Default scenario (if no one condition is true)
+    #         return 0
+    #
+    #     except (TypeError, ZeroDivisionError):
+    #         return 0
+
     def _calculate_full_day_power(self):
         try:
-            # 1. Scenario: 0 energy generation during the day
             if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
                 return 0
-
-            # 2. Scenario: There is a daytime charge, and it is smaller than the evening charge
+            if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
+                return (self.evening_data_charge - self.afternoon_data_charge) * 20.48
             if 0 < self.afternoon_data_charge < self.evening_data_charge:
-                charge_diff = self.evening_data_charge - self.afternoon_data_charge
-                base_power = charge_diff * self.UNIT_CONVERSION_FACTOR
-
-                # processing constants under the same low-light scenarios
-                if self.afternoon_data_price == self.evening_data_price:
-                    return base_power
-                else:
-                    delta_power = self._calculate_power_delta_based_on_price(
-                        self.afternoon_data_price, self.evening_data_price)
-                    return base_power + delta_power
-
-            # 3. Scenario: The daytime solar charge is greater than the evening charge.
-            if self.afternoon_data_charge > 0 and self.afternoon_data_charge > self.evening_data_charge:
-                charge_diff = self.afternoon_data_charge - self.evening_data_charge
-                return self._handle_charge_difference(charge_diff)
-
-            # 4. Scenario: The daytime solar charge is equal to 0 (afternoon_data_charge == 0)
+                return (self.evening_data_charge - self.afternoon_data_charge) * 20.48 + round(
+                    (((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100, 2)
+            if 0 < self.afternoon_data_charge > self.evening_data_charge:
+                if self.afternoon_data_charge - self.evening_data_charge <= 10:
+                    return 200
+                if self.afternoon_data_charge - self.afternoon_data_charge > 10:
+                    return 100
             if self.afternoon_data_charge == 0:
-
-                # 4.1. Solar charge is growing (morning < evening)
                 if self.morning_data_charge < self.evening_data_charge:
-                    charge_diff = self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE
-                    base_power = charge_diff * self.UNIT_CONVERSION_FACTOR
-
-                    price_start = self.morning_data_price + self.MORNING_CORRECTION_PRICE
-                    delta_power = self._calculate_power_delta_based_on_price(
-                        price_start, self.evening_data_price)
-                    return base_power + delta_power
-
-                # 4.2. Solar charge is falling (morning > evening)
-                elif self.morning_data_charge > self.evening_data_charge:
-                    charge_diff = self.morning_data_charge - self.evening_data_charge
-                    return self._handle_charge_difference(charge_diff)
-
-                # 4.3. Solar Charge is the same (morning == evening)
-                elif self.morning_data_charge == self.evening_data_charge:
-                    return (self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR
-
-            # 5. Default scenario (if no one condition is true)
-            return 0
-
-        except (TypeError, ZeroDivisionError):
-            return 0
+                    return (self.evening_data_charge - self.morning_data_charge - 6) * 20.48 + round(
+                        (((self.evening_data_price - self.morning_data_price - .6) * 100) / 43.2) * 100, 2)
+                if self.morning_data_charge - self.evening_data_charge <= 10:
+                    return 200
+                if self.morning_data_charge - self.evening_data_charge > 10:
+                    return 100
+            return 0.1
+        except(TypeError, ZeroDivisionError):
+            return 0.0
 
     def _calculate_full_day_cost(self):
         try:
-            # 1. 0 energy generation during the day.
             if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
-                return 0
-
-            # Function that returns the base cost from the charge difference
-            def get_base_cost(charge_diff):
-                return ((charge_diff * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff
-
-            # 2. Scenario: There is a daytime charge, and it is smaller than the evening charge
+                return 0.0
+            if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
+                return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48) / 1000) * 4.32
             if 0 < self.afternoon_data_charge < self.evening_data_charge:
-                charge_diff = self.evening_data_charge - self.afternoon_data_charge
-                base_cost = get_base_cost(charge_diff)
-
-                if self.afternoon_data_price == self.evening_data_price:
-                    return base_cost
-                else:
-                    return base_cost + (self.evening_data_price - self.afternoon_data_price)
-
-            # 3. Scenario: The daytime solar charge is greater than the evening charge
-            if self.afternoon_data_charge > 0 and self.afternoon_data_charge > self.evening_data_charge:
-                charge_diff = self.afternoon_data_charge - self.evening_data_charge
-
-                if charge_diff <= self.CHARGE_DIFFERENCE_THRESHOLD:
+                return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48) / 1000) * 4.32 + (
+                        self.evening_data_price - self.afternoon_data_price)
+            if 0 < self.afternoon_data_charge > self.evening_data_charge:
+                if self.afternoon_data_charge - self.evening_data_charge <= 10:
                     return 0.86
-                else:
+                if self.afternoon_data_charge - self.evening_data_charge > 10:
                     return 0.43
-
-            # 4. Scenario: The daytime solar charge is equal to 0 (afternoon_data_charge == 0)
             if self.afternoon_data_price == 0:
-
-                # 4.1. Solar charge is growing (morning < evening)
                 if self.morning_data_charge < self.evening_data_charge:
-                    charge_diff = self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE
-                    base_cost = get_base_cost(charge_diff)
-
-                    price_diff = self.evening_data_price - (self.morning_data_price + self.MORNING_CORRECTION_PRICE)
-                    return base_cost + price_diff
-
-                # 4.2. Solar Charge is the same (morning == evening)
-                elif self.morning_data_charge > self.evening_data_charge:
-                    charge_diff = self.morning_data_charge - self.evening_data_charge
-                    if charge_diff <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                        return 0.86
-                    else:
-                        return 0.43
-
-                # 4.3. Solar Charge is the same (morning == evening)
-                elif self.morning_data_charge == self.evening_data_charge:
-                    charge_diff = self.evening_data_charge - self.afternoon_data_charge
-                    return get_base_cost(charge_diff)
-
-            # 5. Default scenario (if no one condition is true)
-            return 0
-
-        except (TypeError, ZeroDivisionError):
-            return 0
+                    return (((self.evening_data_charge - self.morning_data_charge - 6) * 20.48) / 1000) * 4.32 + (
+                            self.evening_data_price - self.morning_data_price - 0.6)
+                if self.morning_data_charge - self.evening_data_charge <= 10:
+                    return 0.86
+                if self.morning_data_charge - self.evening_data_charge > 10:
+                    return 0.43
+            return 0.1
+        except(TypeError, ZeroDivisionError):
+            return 0.0
 
     def get_empty_day_message(self):
         if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
