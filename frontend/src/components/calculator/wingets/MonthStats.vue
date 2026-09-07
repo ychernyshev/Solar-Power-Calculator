@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import backendApi from "../../../services/calculator/backendApi.js";
 import {useOpenMeteoForecastStore} from "../../../../store/useOpenMeteoForecastStore.js";
 import {storeToRefs} from "pinia";
@@ -42,6 +42,11 @@ const currentMonthDetails = async () => {
     loading.value = false;
   }
 }
+
+const ifMonthTotalPowerIsNegativeOrNull = computed(() => {
+  const val = current_month_details.value.difference_power_percentage;
+  return val < 0 || val === null;
+});
 
 onMounted(() => {
   currentMonthDetails();
@@ -92,14 +97,16 @@ onMounted(() => {
     </div>
     <div class="col-6 d-flex flex-column w-100 align-items-end text-purple">
       <div class="text-success-1 d-flex flex-row">
-          <span class="d-flex flex-column align-items-start text-warning">
+          <span class="d-flex flex-column align-items-start">
             <svg v-if="current_month_details.difference_power_percentage < 0 || current_month_details.difference_power_percentage === null"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-right" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M14 13.5a.5.5 0 0 1-.5.5h-6a.5.5 0 0 1 0-1h4.793L2.146 2.854a.5.5 0 1 1 .708-.708L13 12.293V7.5a.5.5 0 0 1 1 0z"/>
             </svg>
             <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-right" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0z"/>
             </svg>
-            <span v-if="current_month_details.difference_power_percentage < 0 || current_month_details.difference_power_percentage === null" class="text-warning difference-power">—</span>
+            <span v-if="ifMonthTotalPowerIsNegativeOrNull"
+                  :class="{'text-warning': ifMonthTotalPowerIsNegativeOrNull}"
+                  class="difference-power">—</span>
             <span v-else class="difference-power">+</span>
           </span>
           <div v-if="current_month_details.difference_power_percentage < 0" class="widget-huge-number text-warning mt-2">{{ Math.abs(current_month_details.difference_power_percentage) }}%</div>

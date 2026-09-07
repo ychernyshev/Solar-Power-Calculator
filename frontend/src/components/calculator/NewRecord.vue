@@ -11,6 +11,7 @@ const emit = defineEmits(["entry-added"]);
 
 // Messages
 const messageRef = ref(null);
+const useCustomPower = ref(false);
 const notificationStore = useNotificationStore();
 const store = useCalculatorStore();
 const handleMessage = (payload) => {
@@ -19,7 +20,7 @@ const handleMessage = (payload) => {
 
 const formData = ref({
   date: new Date().toISOString().split("T")[0],
-  power: "600",
+  // power: "600",
   morning_data_charge: 0,
   morning_data_price: [0],
   afternoon_data_charge: 0,
@@ -27,7 +28,7 @@ const formData = ref({
   evening_data_charge: 0,
   evening_data_price: [0],
   extra_power: 0,
-  weather: {}, // Зберігаємо як об'єкт { id: score }
+  weather: {},
 });
 
 const addPriceRow = () => {
@@ -93,7 +94,7 @@ const submitForm = async () => {
 
     formData.value = {
       date: nextDayString,
-      power: "600",
+      // power: "600",
       morning_data_charge: 0,
       morning_data_price: [0],
       afternoon_data_charge: 0,
@@ -157,28 +158,57 @@ onMounted(fetchWeather);
     <div class="card-body card-light pl-3 pr-3 pb-2">
       <form @submit.prevent="submitForm">
         <div class="row mt-1">
-          <div class="col-12 col-md-6">
-            <label class="form-label">Date</label>
-            <input
-                type="date"
-                v-model="formData.date"
-                class="form-control"
-                :class="{ 'is-invalid': isDuplicateDate }"
-                required
-            />
-            <div v-if="isDuplicateDate" class="invalid-feedback d-block" style="font-size: 0.8rem;">
+          <div class="col-12 col-lg-2">
+            <div class="d-flex flex-row align-items-center">
+              <label class="form-label m-0 p-0 fw-bold text-info-emphasis">Date:</label>
+              <input
+                  type="date"
+                  v-model="formData.date"
+                  class="form-control border-0"
+                  :class="{ 'is-invalid': isDuplicateDate }"
+                  required
+              />
+            </div>
+          </div>
+          <div class="col-12 col-lg-6 my-auto text-start">
+            <div v-if="isDuplicateDate" class="invalid-feedback d-block fw-normal" style="font-size: 0.8rem;">
               This date already has a record. Please choose another.
             </div>
           </div>
-          <div class="col-12 col-md-6">
-            <label class="form-label">System Power</label>
-            <select v-model="formData.power" class="form-select">
-              <option value="200">200</option>
-              <option value="400">400</option>
-              <option value="600">600</option>
-              <option value="800">800</option>
-            </select>
+          <div class="col-12 col-lg-4">
+            <div class="row h-100">
+              <div class="col-4">
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Set power"
+                    v-if="useCustomPower"
+                >
+              </div>
+              <div class="col-8 d-flex ilign-items-center">
+                <div class="form-check d-flex flex-row align-items-center">
+                  <input
+                      class="form-check-input my-auto"
+                      type="checkbox"
+                      v-model="useCustomPower"
+                      id="checkDefault"
+                  >
+                  <label class="form-check-label p-0" for="checkDefault">
+                    Use custom solar system power
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
+<!--          <div class="col-12 col-md-6">-->
+<!--            <label class="form-label">System Power</label>-->
+<!--            <select v-model="formData.power" class="form-select">-->
+<!--              <option value="200">200</option>-->
+<!--              <option value="400">400</option>-->
+<!--              <option value="600">600</option>-->
+<!--              <option value="800">800</option>-->
+<!--            </select>-->
+<!--          </div>-->
         </div>
 
         <hr class="mt-3 mb-2"/>

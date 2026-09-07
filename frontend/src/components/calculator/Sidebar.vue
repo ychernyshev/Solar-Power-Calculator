@@ -53,7 +53,6 @@ const chartCosts = computed(() => {
         <messages-stack ref="messagesRef" class="custom-position" />
       </div>
       <div class="col-12 p-0">
-        <mini-calendar class="mb-0"/>
         <sunrise-sunset-time-widget />
       </div>
     </div>

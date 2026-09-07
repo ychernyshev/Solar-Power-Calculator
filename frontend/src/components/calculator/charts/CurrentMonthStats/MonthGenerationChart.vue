@@ -33,19 +33,42 @@ interface ChartDataProps {
   labels: number[];
   actualPower: (number | null)[];
   forecastPower: (number | null)[];
+  lastYearPower?: (number | null)[];
+  twoYearsAgoPower?: (number | null)[];
+  lastYearLabel?: string;
+  twoYearsAgoLabel?: string;
 }
 
 const props = withDefaults(defineProps<ChartDataProps>(), {
   monthName: 'Current Month',
   labels: () => [],
   actualPower: () => [],
-  forecastPower: () => []
+  forecastPower: () => [],
+  lastYearPower: () => [],
+  twoYearsAgoPower: () => [],
+  lastYearLabel: 'Last Year',
+  twoYearsAgoLabel: 'Two Years Ago'
 });
+
+// DEPRECATED
+// interface ChartDataProps {
+//   monthName: string;
+//   labels: number[];
+//   actualPower: (number | null)[];
+//   forecastPower: (number | null)[];
+// }
+//
+// const props = withDefaults(defineProps<ChartDataProps>(), {
+//   monthName: 'Current Month',
+//   labels: () => [],
+//   actualPower: () => [],
+//   forecastPower: () => []
+// });
 
 const todayDay = computed(() => new Date().getDate());
 
 const chartData = computed(() => {
-  const datasets = [
+  const datasets: any[] = [
     {
       label: 'Actual generation (kWh)',
       data: props.actualPower,
@@ -73,11 +96,73 @@ const chartData = computed(() => {
     });
   }
 
+  if (props.lastYearPower && props.lastYearPower.length > 0) {
+    datasets.push({
+      label: props.lastYearLabel,
+      data: props.lastYearPower,
+      borderColor: '#3b82f6',
+      backgroundColor: '#3b82f6',
+      tension: 0.4,
+      borderWidth: 2,
+      pointRadius: 2,
+      spanGaps: true
+    });
+  }
+
+  if (props.twoYearsAgoPower && props.twoYearsAgoPower.length > 0) {
+    datasets.push({
+      label: props.twoYearsAgoLabel,
+      data: props.twoYearsAgoPower,
+      borderColor: '#10b981',
+      backgroundColor: '#10b981',
+      tension: 0.4,
+      borderWidth: 2,
+      pointRadius: 2,
+      spanGaps: true
+    });
+  }
+
   return {
     labels: props.labels,
     datasets
   };
 });
+
+// DEPRECATED
+// const chartData = computed(() => {
+//   const datasets = [
+//     {
+//       label: 'Actual generation (kWh)',
+//       data: props.actualPower,
+//       borderColor: '#a855f7',
+//       backgroundColor: '#a855f7',
+//       tension: 0.4,
+//       borderWidth: 4,
+//       pointRadius: (context: any) => context.dataIndex + 1 === todayDay.value ? 6 : 3,
+//       pointBackgroundColor: '#a855f7',
+//       spanGaps: true
+//     }
+//   ];
+//
+//   if (!isLocationDenied.value) {
+//     datasets.push({
+//       label: 'Forecast generation (kWh)',
+//       data: props.forecastPower,
+//       borderColor: '#9ca3af',
+//       backgroundColor: '#9ca3af',
+//       tension: 0.4,
+//       borderWidth: 3,
+//       borderDash: [6, 4],
+//       pointRadius: 0,
+//       spanGaps: true
+//     });
+//   }
+//
+//   return {
+//     labels: props.labels,
+//     datasets
+//   };
+// });
 
 const todayLinePlugin = {
   id: 'todayLine',

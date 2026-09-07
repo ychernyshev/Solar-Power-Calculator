@@ -34,7 +34,7 @@ class DataEntryLineAdmin(admin.ModelAdmin):
     get_weather.short_description = "Погода"
 
     def display_power(self, obj):
-        return format_html('{}Вт', obj.power)
+        return format_html('{}Вт', obj.system_power)
 
     display_power.short_description = 'Потужність системи'
 

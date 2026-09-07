@@ -8,7 +8,7 @@ export const useNotificationStore = defineStore('notifications', () => {
 
     const initMessages = async () => {
         try {
-            const response = await backendApi.get('calculator/system_event/?limit=8');
+            const response = await backendApi.get('calculator/system_event/?limit=5');
             const data = response.data.results || response.data;
 
             if (Array.isArray(data)) {
@@ -97,7 +97,7 @@ export const useNotificationStore = defineStore('notifications', () => {
                     }
                 });
 
-                messages.value = formattedMessages.slice(0, 5);
+                messages.value = formattedMessages.slice(0, 10);
             }
         } catch (e) {
             console.error("Помилка завантаження повідомлень з бази даних", e);
@@ -146,7 +146,7 @@ export const useNotificationStore = defineStore('notifications', () => {
         };
 
         messages.value.unshift(newMessage);
-        if (messages.value.length > 8) {
+        if (messages.value.length > 5) {
             messages.value.pop();
         }
     };

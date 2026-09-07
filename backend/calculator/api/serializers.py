@@ -31,6 +31,7 @@ class CurrentTariffSerializer(serializers.ModelSerializer):
 class DataEntrySerializer(serializers.ModelSerializer):
     empty_day_message = serializers.ReadOnlyField(source='get_empty_day_message')
     weather_details = WeatherConditionSerializer(source='weather', many=True, read_only=True)
+    system_power = serializers.IntegerField(required=False, allow_null=True)
 
     weather = serializers.PrimaryKeyRelatedField(
         many=True,

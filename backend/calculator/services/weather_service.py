@@ -156,7 +156,9 @@ class WeatherForecastService:
             wind_dir = weather_h.get('wind_direction_10m', [0])[safe_h]
 
             today_day_watt = total_hourly_wh[:24] if len(total_hourly_wh) >= 24 else total_hourly_wh
-            prepared_day_watt = (sum(today_day_watt) / 1000) * PanelsArrayModel.objects.filter(user=user).count()
+            print('total_hourly_wh[:24]', total_hourly_wh[:24])
+            # prepared_day_watt = (sum(today_day_watt) / 1000) * PanelsArrayModel.objects.filter(user=user).count()
+            prepared_day_watt = sum(today_day_watt) / 1000.0
             today_peak_hour = today_day_watt.index(max(today_day_watt)) if today_day_watt else 0
 
             result_dict = {

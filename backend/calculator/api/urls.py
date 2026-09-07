@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from rest_framework.views import APIView
 
 from calculator.api.views import (DataEntryViewSet,
                                   CurrentTariffViewSet,
@@ -21,7 +22,8 @@ from calculator.api.views import (DataEntryViewSet,
                                   get_timezone_by_coords,
                                   UserProfileSettingsAPIView,
                                   get_weather_day_data,
-                                  SystemEventAPIView, )
+                                  SystemEventAPIView,
+                                  CalculatorDateRangeView, )
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
@@ -53,4 +55,5 @@ urlpatterns = [
     path('get_timezone/', get_timezone_by_coords, name='get_timezone'),
     path('user_settings/', UserProfileSettingsAPIView.as_view(), name='user-settings'),
     path('system_event/', SystemEventAPIView.as_view(), name='system_event'),
+    path('date_range/', CalculatorDateRangeView.as_view(), name='date_range'),
 ]

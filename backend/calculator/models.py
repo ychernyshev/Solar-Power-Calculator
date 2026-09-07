@@ -3,9 +3,13 @@ from datetime import date
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Sum, Avg
+from django.db.models import Sum, Avg, Model
 from django.db.models.functions import TruncMonth
 from django.utils import timezone
+
+
+def get_power_tariff():
+        return CurrentTariffModel.load().power_tariff
 
 # ====================================================================
 # MODEL 2: ENTRIES
@@ -33,7 +37,8 @@ class DataEntryLineModel(models.Model):
 
     # --- ПОЛЯ ---
     date = models.DateField(verbose_name='Дата')
-    power = models.CharField(choices=POWER, max_length=3, default='600', verbose_name='Потужність системи')
+    # power = models.CharField(choices=POWER, max_length=3, default='600', verbose_name='Потужність системи')
+    system_power = models.IntegerField(verbose_name='Solar system power')
     weather = models.ManyToManyField('WeatherConditionModel',
                                      db_index=True,
                                      related_name='weather',
@@ -60,7 +65,7 @@ class DataEntryLineModel(models.Model):
     full_day_power = models.FloatField(blank=True, verbose_name='Вироблена потужність за день')
     full_day_cost = models.FloatField(blank=True, null=True, verbose_name='Вартість виробленої енергії за день')
 
-    power_tariff = models.FloatField(verbose_name='Вартість за Кв')
+    power_tariff = models.FloatField(verbose_name='Вартість за Кв', default=get_power_tariff)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, verbose_name='User')
 
@@ -347,6 +352,20 @@ class DataEntryLineModel(models.Model):
         else:
             self.full_day_power = self._calculate_full_day_power()
             self.full_day_cost = self._calculate_full_day_cost()
+
+        if self.user:
+            if not self.system_power or self.system_power <= 0:
+                total_panels_power = 0.0
+                for array in PanelsArrayModel.objects.filter(user=self.user):
+                    area = array.area if array.area is not None else 0.0
+                    eff = array.efficiency if array.efficiency is not None else 0.0
+
+                    if eff > 1.0:
+                        eff = eff / 100.0
+
+                    total_panels_power += area * eff * 1000
+
+                self.system_power = round(total_panels_power, 2)
 
         super().save(*args, **kwargs)
 

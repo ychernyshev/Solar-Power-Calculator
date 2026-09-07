@@ -7,6 +7,7 @@
   import DifferenceMonthsStats from "@/components/calculator/charts/DifferenceMonthsStats/DifferenceMonthsStats.vue";
   import CurrentYearStats from "@/components/calculator/charts/CurrentYearStats/CurrentYearStats.vue";
   import SystemLogs from "@/components/calculator/SystemLogs.vue";
+  import CalendarModal from "@/components/calculator/calendar/CalendarModal.vue";
 
   const BOOTSWATCH_ID = 'bootswatch-theme';
   const POWER_CALCULATOR_CLASS = 'power-calculator-class';
@@ -45,6 +46,7 @@
     <current-month-stats />
     <difference-months-stats />
     <current-year-stats />
+    <calendar-modal />
     <system-logs />
     <slot />
   </div>

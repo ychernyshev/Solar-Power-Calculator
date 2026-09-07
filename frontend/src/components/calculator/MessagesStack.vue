@@ -121,7 +121,7 @@ defineExpose({ pushLocalMessage });
 <style scoped>
 .notification-stack {
   position: absolute;
-  top: -10rem;
+  top: -20rem;
   right: 10px;
   z-index: 1000;
   width: 1400px;
