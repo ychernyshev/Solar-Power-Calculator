@@ -38,7 +38,7 @@ class DataEntryLineModel(models.Model):
     # --- ПОЛЯ ---
     date = models.DateField(verbose_name='Дата')
     # power = models.CharField(choices=POWER, max_length=3, default='600', verbose_name='Потужність системи')
-    power = models.IntegerField(verbose_name='Solar system power')
+    system_power = models.IntegerField(verbose_name='Solar system power')
     weather = models.ManyToManyField('WeatherConditionModel',
                                      db_index=True,
                                      related_name='weather',
@@ -364,7 +364,7 @@ class DataEntryLineModel(models.Model):
 
                 total_panels_power += area * eff * 1000
 
-            self.power = round(total_panels_power, 2)
+            self.system_power = round(total_panels_power, 2)
 
         super().save(*args, **kwargs)
 

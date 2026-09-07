@@ -42,7 +42,7 @@ class DataEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = DataEntryLineModel
         fields = '__all__'
-        read_only_fields = ['full_day_power', 'full_day_cost', 'power_tariff', 'user']
+        read_only_fields = ['full_day_power', 'full_day_cost', 'power_tariff', 'system_power', 'user']
 
     def get_weather_details(self, obj):
         scores = obj.weather_scores or {}
