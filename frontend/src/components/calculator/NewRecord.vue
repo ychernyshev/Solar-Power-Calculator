@@ -20,13 +20,13 @@ const handleMessage = (payload) => {
 
 const formData = ref({
   date: new Date().toISOString().split("T")[0],
-  // power: "600",
   morning_data_charge: 0,
   morning_data_price: [0],
   afternoon_data_charge: 0,
   afternoon_data_price: [0],
   evening_data_charge: 0,
   evening_data_price: [0],
+  system_power: 0,
   extra_power: 0,
   weather: {},
 });
@@ -94,13 +94,13 @@ const submitForm = async () => {
 
     formData.value = {
       date: nextDayString,
-      // power: "600",
       morning_data_charge: 0,
       morning_data_price: [0],
       afternoon_data_charge: 0,
       afternoon_data_price: [0],
       evening_data_charge: 0,
       evening_data_price: [0],
+      system_power: 0,
       extra_power: 0,
       weather: {},
     };
@@ -180,6 +180,7 @@ onMounted(fetchWeather);
               <div class="col-4">
                 <input
                     type="text"
+                    v-model="formData.system_power"
                     class="form-control"
                     placeholder="Set power"
                     v-if="useCustomPower"
@@ -188,9 +189,9 @@ onMounted(fetchWeather);
               <div class="col-8 d-flex ilign-items-center">
                 <div class="form-check d-flex flex-row align-items-center">
                   <input
+                      v-model="useCustomPower"
                       class="form-check-input my-auto"
                       type="checkbox"
-                      v-model="useCustomPower"
                       id="checkDefault"
                   >
                   <label class="form-check-label p-0" for="checkDefault">
